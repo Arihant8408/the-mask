@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Mask – Masquerade Ball & Prom Night</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255,215,0,0.15), transparent 40%),
+        linear-gradient(135deg, #050505, #12001a, #000);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 18px;
+      padding: 26px 22px 30px;
+      box-shadow:
+        0 0 40px rgba(255, 215, 0, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+    }
+
+    .header { text-align:center; margin-bottom:22px; }
+    .header h1 {
+      font-family:'Cinzel',serif;
+      font-size:30px;
+      letter-spacing:2px;
+      margin:0;
+      color:#ffd700;
+    }
+    .header p { margin:6px 0 0; font-size:13px; color:#ddd; }
+
+    .divider {
+      height:1px;
+      background:linear-gradient(to right, transparent, #ffd700, transparent);
+      margin:18px 0 22px;
+    }
+
+    label { font-size:13px; letter-spacing:1px; color:#ffd700; display:block; margin-bottom:6px; }
+
+    select, input {
+      width:100%; padding:12px; border-radius:10px;
+      border:1px solid rgba(255,215,0,0.3);
+      background:rgba(0,0,0,0.6); color:#fff; margin-bottom:16px;
+    }
+
+    .qty-row { display:flex; gap:10px; align-items:center; }
+    .qty-btn {
+      width:42px; height:42px; border-radius:50%;
+      border:1px solid rgba(255,215,0,0.5);
+      background:transparent; color:#ffd700; font-size:22px;
+      cursor:pointer;
+    }
+    .qty-row input { text-align:center; font-size:16px; margin-bottom:0; }
+
+    .total-box {
+      margin:22px 0 18px; padding:16px; text-align:center;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05));
+      border:1px solid rgba(255,215,0,0.35);
+    }
+    .total-box span { font-size:12px; letter-spacing:1px; }
+    .total-box strong { font-family:'Cinzel',serif; font-size:30px; color:#ffd700; }
+
+    .pay-btn {
+      width:100%; padding:14px; border-radius:14px;
+      font-family:'Cinzel',serif; font-size:15px; letter-spacing:1.5px;
+      border:none; cursor:pointer;
+      background:linear-gradient(135deg, #ffd700, #ffb700); color:#000;
+      margin-top:8px;
+    }
+
+    .footer-note { text-align:center; font-size:11px; color:#bbb; margin-top:14px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+      <img src="logo.png" alt="Jashn By Praram" style="width:200px; margin-bottom:16px; filter: drop-shadow(0 0 14px rgba(255,215,0,0.55));" />
+      <h1>THE MASK</h1>
+      <p>Masquerade Ball & Prom Night</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <label>PASS TYPE</label>
+  <select id="type" onchange="updatePrice()">
+    <option value="stag">Stag</option>
+    <option value="couple">Couple</option>
+  </select>
+
+  <label>PRICE CATEGORY</label>
+  <select id="category" onchange="updatePrice()">
+    <option value="early">Early Bird</option>
+    <option value="normal">Normal</option>
+  </select>
+
+  <label>NUMBER OF PASSES</label>
+  <div class="qty-row">
+    <button class="qty-btn" onclick="changeQty(-1)">−</button>
+    <input type="number" id="qty" value="1" readonly />
+    <button class="qty-btn" onclick="changeQty(1)">+</button>
+  </div>
+
+  <div class="total-box">
+    <span>TOTAL PAYABLE</span>
+    <strong>₹<span id="total">1299</span></strong>
+  </div>
+
+  <label>PHONE NUMBER</label>
+  <input type="tel" id="phone" placeholder="Enter WhatsApp number" />
+
+  <label>EMAIL ADDRESS</label>
+  <input type="email" id="email" placeholder="Enter email address" />
+
+  <button class="pay-btn" onclick="openPayPage()">PROCEED TO PAYMENT</button>
+
+  <div class="footer-note">
+    Dress to Impress · Prom Elegance · Night of Mystery<br />
+    <span style="font-size:10px;">Tickets once booked are non-refundable</span>
+  </div>
+</div>
+
+<!-- PAYMENT OVERLAY -->
+<div id="payPage" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10; justify-content:center; align-items:center;">
+  <div class="container" style="max-width:400px;">
+    <div class="header">
+      <h1>PAYMENT</h1>
+      <p>Confirm your booking</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="text-align:center;">Total Amount</p>
+    <div class="total-box">
+      <strong>₹<span id="payTotal">1299</span></strong>
+    </div>
+
+    <div id="qrSection" style="display:none; text-align:center; margin-bottom:15px;">
+      <p style="font-size:13px;">Scan UPI QR to Pay</p>
+      <img src="qr.png" alt="UPI QR" style="width:180px; border-radius:12px; border:1px solid rgba(255,215,0,0.4);" />
+      <p style="font-size:11px;">Pay the exact amount shown above</p>
+    </div>
+
+    <button class="pay-btn" onclick="showQR()">PAY NOW</button>
+    <button class="pay-btn" style="background:#25D366;" onclick="redirectWhatsApp()">PAYMENT COMPLETED – SEND PROOF</button>
+    <button class="pay-btn" style="background:#333; color:#fff;" onclick="closePayPage()">GO BACK</button>
+  </div>
+</div>
+
+<script>
+  function basePrice() {
+    const type = document.getElementById('type').value;
+    const category = document.getElementById('category').value;
+    if (type === 'stag' && category === 'early') return 1299;
+    if (type === 'stag' && category === 'normal') return 1500;
+    if (type === 'couple' && category === 'early') return 2499;
+    if (type === 'couple' && category === 'normal') return 2799;
+  }
+
+  function updatePrice() {
+    const qty = parseInt(document.getElementById('qty').value);
+    document.getElementById('total').innerText = basePrice() * qty;
+  }
+
+  function changeQty(delta) {
+    const q = document.getElementById('qty');
+    q.value = Math.max(1, parseInt(q.value) + delta);
+    updatePrice();
+  }
+
+  function openPayPage() {
+    document.getElementById('payTotal').innerText = document.getElementById('total').innerText;
+    document.getElementById('payPage').style.display = 'flex';
+  }
+
+  function closePayPage() {
+    document.getElementById('payPage').style.display = 'none';
+  }
+
+  function showQR() {
+    document.getElementById('qrSection').style.display = 'block';
+  }
+
+  function redirectWhatsApp() {
+    const phone = document.getElementById('phone').value || 'Not provided';
+    const email = document.getElementById('email').value || 'Not provided';
+    const amount = document.getElementById('payTotal').innerText;
+    const msg = `Hi, I have completed payment for THE MASK event.%0AAmount: ₹${amount}%0APhone: ${phone}%0AEmail: ${email}`;
+    window.location.href = `https://wa.me/918073633965?text=${msg}`;
+  }
+</script>
+
+</body>
+</html>
