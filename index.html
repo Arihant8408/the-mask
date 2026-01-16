@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Mask – Masquerade Ball & Prom Night</title>
+  <title>The Mask – Masquerade x DJ Night</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -89,6 +89,19 @@
     }
 
     .footer-note { text-align:center; font-size:11px; color:#bbb; margin-top:14px; }
+
+    /* NEW: Early Bird banner */
+    .mask-note {
+      display:none;
+      text-align:center;
+      font-size:12px;
+      color:#ffd700;
+      margin-bottom:12px;
+      padding:8px;
+      border:1px dashed rgba(255,215,0,0.5);
+      border-radius:10px;
+      background:rgba(255,215,0,0.05);
+    }
   </style>
 </head>
 <body>
@@ -97,15 +110,16 @@
   <div class="header">
       <img src="logo.png" alt="Jashn By Praram" style="width:200px; margin-bottom:16px; filter: drop-shadow(0 0 14px rgba(255,215,0,0.55));" />
       <h1>THE MASK</h1>
-      <p>Masquerade Ball & Prom Night</p>
+      <p>Masquerade x DJ Night</p>
   </div>
 
   <div class="divider"></div>
 
   <label>PASS TYPE</label>
+  <!-- Changed values to match your pricing logic -->
   <select id="type" onchange="updatePrice()">
-    <option value="stag">Male</option>
-    <option value="couple">Female</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
   </select>
 
   <label>PRICE CATEGORY</label>
@@ -113,6 +127,11 @@
     <option value="early">Early Bird</option>
     <option value="normal">Normal</option>
   </select>
+
+  <!-- NEW: Early Bird message shown in canvas -->
+  <div id="maskNote" class="mask-note">
+    🎭 Early Bird Offer: Free Mask will be provided 🎭
+  </div>
 
   <label>NUMBER OF PASSES</label>
   <div class="qty-row">
@@ -123,7 +142,7 @@
 
   <div class="total-box">
     <span>TOTAL PAYABLE</span>
-    <strong>₹<span id="total">1299</span></strong>
+    <strong>₹<span id="total">799</span></strong>
   </div>
 
   <label>PHONE NUMBER</label>
@@ -135,7 +154,7 @@
   <button class="pay-btn" onclick="openPayPage()">PROCEED TO PAYMENT</button>
 
   <div class="footer-note">
-    Dress to Impress · Prom Elegance · Night of Mystery<br />
+    Dress to Impress · DJ Night · Night of Mystery<br />
     <span style="font-size:10px;">Tickets once booked are non-refundable</span>
   </div>
 </div>
@@ -152,7 +171,12 @@
 
     <p style="text-align:center;">Total Amount</p>
     <div class="total-box">
-      <strong>₹<span id="payTotal">1299</span></strong>
+      <strong>₹<span id="payTotal">799</span></strong>
+    </div>
+
+    <!-- Also visible here so user sees it again -->
+    <div id="payMaskNote" class="mask-note">
+      🎭 Early Bird Offer Applied: Free Mask Included 🎭
     </div>
 
     <div id="qrSection" style="display:none; text-align:center; margin-bottom:15px;">
@@ -171,15 +195,22 @@
   function basePrice() {
     const type = document.getElementById('type').value;
     const category = document.getElementById('category').value;
-    if (type === 'Male' && category === 'early') return 799;
-    if (type === 'Male' && category === 'normal') return 799;
-    if (type === 'Female' && category === 'early') return 899;
-    if (type === 'Female' && category === 'normal') return 899;
+
+    // Prices exactly as you asked
+    if (type === 'Male') return 799;
+    if (type === 'Female') return 899;
   }
 
   function updatePrice() {
     const qty = parseInt(document.getElementById('qty').value);
+    const category = document.getElementById('category').value;
+
+    // Update total
     document.getElementById('total').innerText = basePrice() * qty;
+
+    // Show / hide Early Bird message in canvas
+    const showMask = category === 'early';
+    document.getElementById('maskNote').style.display = showMask ? 'block' : 'none';
   }
 
   function changeQty(delta) {
@@ -189,7 +220,14 @@
   }
 
   function openPayPage() {
-    document.getElementById('payTotal').innerText = document.getElementById('total').innerText;
+    const amount = document.getElementById('total').innerText;
+    const category = document.getElementById('category').value;
+
+    document.getElementById('payTotal').innerText = amount;
+
+    // Show Early Bird note on payment page too
+    document.getElementById('payMaskNote').style.display = category === 'early' ? 'block' : 'none';
+
     document.getElementById('payPage').style.display = 'flex';
   }
 
@@ -205,13 +243,17 @@
     const phone = document.getElementById('phone').value || 'Not provided';
     const email = document.getElementById('email').value || 'Not provided';
     const amount = document.getElementById('payTotal').innerText;
-    const msg = `Hi, I have completed payment for THE MASK event.%0AAmount: ₹${amount}%0APhone: ${phone}%0AEmail: ${email}`;
+    const category = document.getElementById('category').value;
+
+    const maskLine = category === 'early' ? '%0AFree Mask: Included (Early Bird)' : '';
+
+    const msg = `Hi, I have completed payment for THE MASK event.%0AAmount: ₹${amount}%0APhone: ${phone}%0AEmail: ${email}${maskLine}`;
     window.location.href = `https://wa.me/918299580250?text=${msg}`;
   }
+
+  // Initialize correctly on load
+  updatePrice();
 </script>
 
 </body>
 </html>
-
-
-
