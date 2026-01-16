@@ -104,8 +104,8 @@
 
   <label>PASS TYPE</label>
   <select id="type" onchange="updatePrice()">
-    <option value="stag">Stag</option>
-    <option value="couple">Couple</option>
+    <option value="stag">Male</option>
+    <option value="couple">Female</option>
   </select>
 
   <label>PRICE CATEGORY</label>
@@ -171,10 +171,10 @@
   function basePrice() {
     const type = document.getElementById('type').value;
     const category = document.getElementById('category').value;
-    if (type === 'stag' && category === 'early') return 1299;
-    if (type === 'stag' && category === 'normal') return 1500;
-    if (type === 'couple' && category === 'early') return 2499;
-    if (type === 'couple' && category === 'normal') return 2799;
+    if (type === 'male' && category === 'early') return 799;
+    if (type === 'male' && category === 'normal') return 799;
+    if (type === 'female' && category === 'early') return 899;
+    if (type === 'female' && category === 'normal') return 899;
   }
 
   function updatePrice() {
@@ -212,4 +212,5 @@
 
 </body>
 </html>
+
 
